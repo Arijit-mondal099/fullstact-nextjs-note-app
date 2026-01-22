@@ -7,7 +7,7 @@ import NoteModel from "@/models/Note.model";
 export async function GET(req: NextRequest) {
     try {
         await db_connection();
-        const notes = await NoteModel.find({});
+        const notes = await NoteModel.find({}).sort({ createdAt: -1 });
         return NextResponse.json({ success: true, notes }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, error }, { status: 500 });
