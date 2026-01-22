@@ -21,3 +21,14 @@ export async function POST(req: NextRequest) {
         return new Response(JSON.stringify(error), { status: 500 });
     }   
 }
+
+// get notes
+export async function GET(req: NextRequest) {
+    try {
+        await db_connection();
+        const notes = await NoteModel.find({});
+        return new Response(JSON.stringify(notes), { status: 201 });
+    } catch (error) {
+        return new Response(JSON.stringify(error), { status: 500 });
+    } 
+}
