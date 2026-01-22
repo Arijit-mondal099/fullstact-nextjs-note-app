@@ -1,36 +1,179 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fullstack Note App
+
+A modern, fast, and scalable **full‑stack note‑taking application** built with **Next.js App Router**, MongoDB, and Tailwind CSS. Designed with clean architecture, API routing, and production‑ready patterns.
+
+---
+
+## Features
+
+* Create, read, update, and delete notes (CRUD)
+* Fast API routes with Next.js App Router
+* MongoDB database with Mongoose ODM
+* Clean UI with Tailwind CSS
+* Real‑time UI updates
+* SSR + CSR hybrid rendering
+* Modular folder structure
+* Environment‑based configuration
+* Fully responsive design
+
+---
+
+## Tech Stack
+
+| Layer    | Technology             |
+| -------- | ---------------------- |
+| Frontend | **Next.js**, React     |
+| Styling  | **Tailwind CSS**       |
+| Backend  | **Next.js API Routes** |
+| Database | **MongoDB**            |
+| ODM      | **Mongoose**           |
+| Language | **TypeScript**         |
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+* Node.js **v21+**
+* npm or yarn
+* MongoDB (local or cloud)
+
+---
+
+## Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/Arijit-mondal099/fullstact-nextjs-note-app.git
+
+# Enter project folder
+cd fullstact-nextjs-note-app
+
+# Install dependencies
+npm install
+# or
+yarn install
+```
+
+---
+
+## Environment Setup
+
+Create a `.env` file in the root directory:
+
+```env
+DB_URI=mongodb-connection-string
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+
+---
+
+## Running the App
+
+### Development Mode
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open in browser:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Build for Production
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+npm start
+# or
+yarn build
+yarn start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Usage Guide
 
-## Deploy on Vercel
+1. Open the app in your browser
+2. Click **"Create Note"**
+3. Add title and content
+4. Save the note
+5. Edit or delete notes anytime
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+```txt
+note-app/
+├── app/            # Next.js App Router
+│   └── api/        # API routes
+├── components/     # UI components
+├── lib/            # DB connection & helpers
+├── models/         # Mongoose models
+├── public/         # Static assets
+├── .env            # Environment variables
+└── README.md
+```
+
+---
+
+## 🔌 API Endpoints
+
+| Method | Endpoint          | Description   |
+| ------ | ----------------- | ------------- |
+| GET    | /api/v1/notes     | Get all notes |
+| POST   | /api/v1/notes     | Create a note |
+| DELETE | /api/v1/notes/:id | Delete a note |
+| PATCH  | /api/v1/notes/:id | Update a note |
+
+---
+
+## Architecture Highlights
+
+* App Router based API design
+* Server Components for DB access
+* Client Components for UI
+* Proper data serialization
+* Hydration‑safe rendering
+* Clean separation of concerns
+
+---
+
+## Best Practices Used
+
+* Environment variable isolation
+* Database connection pooling
+* API response standardization
+* Proper error handling
+* Modular code structure
+* Reusable components
+* Type safety
+
+---
+
+## License
+
+MIT License
+
+---
+
+## Author
+
+**Arijit Mondal**
+Full‑stack developer | MERN
+
+GitHub: [https://github.com/Arijit-mondal099](https://github.com/Arijit-mondal099)
+
+---
+
+## Support
+
+If you like this project, give it a on GitHub — it helps a lot!
