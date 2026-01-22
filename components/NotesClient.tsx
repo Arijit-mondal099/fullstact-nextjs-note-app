@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ChangeEvent,
-  FormEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 interface INote {
   _id: string;
@@ -19,6 +13,8 @@ interface INote {
 const NotesClient = () => {
   const [formData, setFormData] = useState({ title: "", content: "" });
   const [notes, setNotes] = useState<INote[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingNoteId, setEditingNoteId] = useState("");
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -27,46 +23,57 @@ const NotesClient = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const getNotes = useCallback(async (): Promise<void> => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notes`,
-      );
-      const data = await res.json();
-
-      if (data.success) {
-        setNotes(data.notes);
-      } else {
-        console.error(data.message || "Failed to fetch notes");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notes`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+      // for updating existing note
+      if (isEditing) {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notes/${editingNoteId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
           },
-          body: JSON.stringify(formData),
-        },
-      );
-      const data = await res.json();
-
-      if (data?.success) {
-        setNotes([data.note, ...notes]);
-      } else {
-        console.error(data.message || "Failed to create notes");
+        );
+        const data = await res.json();
+        if (data?.success) {
+          setNotes((prev) =>
+            prev.map((n) =>
+              n._id === editingNoteId ? { ...n, ...data.note } : n,
+            ),
+          );
+        } else {
+          console.error(data.message || "Failed to update notes");
+        }
+        setFormData({ content: "", title: "" });
+        setIsEditing(false);
       }
+      // for creating new note
+      else {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notes`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          },
+        );
+        const data = await res.json();
 
-      setFormData({ content: "", title: "" });
+        if (data?.success) {
+          setNotes([data.note, ...notes]);
+        } else {
+          console.error(data.message || "Failed to create notes");
+        }
+
+        setFormData({ content: "", title: "" });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -88,8 +95,30 @@ const NotesClient = () => {
   };
 
   useEffect(() => {
-    getNotes();
+    async function fetchNotes() {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notes`,
+      );
+      const data = await res.json();
+
+      if (data.success) setNotes(data.notes);
+      else console.error(data.message || "Failed to fetch notes");
+    }
+
+    fetchNotes();
   }, []);
+
+  const startEditNote = (Note: INote) => {
+    setFormData({ title: Note.title, content: Note.content });
+    setEditingNoteId(Note._id);
+    setIsEditing(true);
+  };
+
+  const calcelEdit = () => {
+    setFormData({ title: "", content: "" });
+    setEditingNoteId("");
+    setIsEditing(false);
+  };
 
   return (
     <>
@@ -127,8 +156,18 @@ const NotesClient = () => {
             type="submit"
             className="px-6 py-2 text-white bg-blue-500 rounded-lg"
           >
-            Create
+            {isEditing ? "Update Note" : "Create Note"}
           </button>
+
+          {isEditing && (
+            <button
+              type="button"
+              className="px-6 py-2 text-white bg-red-500 rounded-lg ml-4"
+              onClick={calcelEdit}
+            >
+              Cancel
+            </button>
+          )}
         </form>
       </div>
 
@@ -147,14 +186,18 @@ const NotesClient = () => {
               </div>
 
               <div className="text-gray-400 text-xs font-medium">
-                <p>Created: {new Date(n.createdAt).toLocaleDateString()}</p>
-                <p>Updated: {new Date(n.updatedAt).toLocaleDateString()}</p>
+                <p>Created: {new Date(n.createdAt).toDateString()}</p>
+                <p>Updated: {new Date(n.updatedAt).toDateString()}</p>
               </div>
 
               <div className="space-x-4">
-                <button className="bg-green-500 px-6 py-2 rounded-lg text-sm font-semibold">
+                <button
+                  className="bg-green-500 px-6 py-2 rounded-lg text-sm font-semibold"
+                  onClick={() => startEditNote(n)}
+                >
                   Edit
                 </button>
+
                 <button
                   className="bg-red-500 px-6 py-2 rounded-lg text-sm font-semibold"
                   onClick={() => handleDeleteNote(n._id)}
