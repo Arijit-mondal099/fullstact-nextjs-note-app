@@ -72,6 +72,21 @@ const NotesClient = () => {
     }
   };
 
+  const handleDeleteNote = async (id: string): Promise<void> => {
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notes/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      setNotes((prev) => prev.filter((n) => n._id !== id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getNotes();
   }, []);
@@ -120,10 +135,15 @@ const NotesClient = () => {
       <div className="border border-gray-800 shadow p-4 w-full rounded-lg space-y-4">
         {notes.length ? (
           notes.map((n) => (
-            <div key={n._id} className="border border-gray-800 shadow p-4 w-full rounded-lg space-y-4">
+            <div
+              key={n._id}
+              className="border border-gray-800 shadow p-4 w-full rounded-lg space-y-4"
+            >
               <div>
                 <h4 className="text-lg font-semibold">{n.title}</h4>
-                <p className="text-sm font-medium tracking-tight text-gray-400">{n.content}</p>
+                <p className="text-sm font-medium tracking-tight text-gray-400">
+                  {n.content}
+                </p>
               </div>
 
               <div className="text-gray-400 text-xs font-medium">
@@ -132,8 +152,15 @@ const NotesClient = () => {
               </div>
 
               <div className="space-x-4">
-                <button className="bg-green-500 px-6 py-2 rounded-lg text-sm font-semibold">Edit</button>
-                <button className="bg-red-500 px-6 py-2 rounded-lg text-sm font-semibold">Delete</button>
+                <button className="bg-green-500 px-6 py-2 rounded-lg text-sm font-semibold">
+                  Edit
+                </button>
+                <button
+                  className="bg-red-500 px-6 py-2 rounded-lg text-sm font-semibold"
+                  onClick={() => handleDeleteNote(n._id)}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))
